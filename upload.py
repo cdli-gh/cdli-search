@@ -8,6 +8,11 @@ import os
 import csv
 import fileinput
 
+from elasticsearch import Elasticsearch
+
+host = os.environ.get('ELASTICSEARCH_URL', 'localhost')
+es = Elasticsearch(host)
+
 files = [
     'cdli_catalogue_1of2.csv',
     'cdli_catalogue_2of2.csv',
