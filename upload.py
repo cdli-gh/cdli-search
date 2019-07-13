@@ -13,8 +13,6 @@ files = [
     'cdli_catalogue_2of2.csv',
 ]
 
-filenames = [os.path.join('../cdli-data', fn) for fn in files]
-
 
 def as_utf8(filename, mode):
     '''Return a file opened as UTF-8 text.
@@ -46,4 +44,5 @@ def print_entries(filenames):
 
 
 if __name__ == '__main__':
+    filenames = [os.path.join('../cdli-data', fn) for fn in files]
     print_entries(filenames)
