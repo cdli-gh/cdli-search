@@ -3,15 +3,12 @@
 ' Upload data from the the CDLI catalogue to Elasticsearch for indexing.'
 
 import io
-
 import os
 import csv
 import fileinput
 
+from datetime import datetime
 from elasticsearch import Elasticsearch
-
-host = os.environ.get('ELASTICSEARCH_URL', 'localhost')
-es = Elasticsearch(host)
 
 files = [
     'cdli_catalogue_1of2.csv',
@@ -19,7 +16,7 @@ files = [
 ]
 
 
-def as_utf8(filename, mode):
+def as_utf8(filename, mode='r'):
     '''Return a file opened as UTF-8 text.
 
     The gives correct unicode strings on systems where the
@@ -43,11 +40,25 @@ def read_catalogue(filenames):
 
 
 def print_entries(filenames):
-    'Dump each entry for debugging.'
+    'Dump each row in the catalogue for debugging.'
     for row in read_catalogue(filenames):
         print('P' + row['id_text'], row['designation'])
 
 
+def index_entries(filenames):
+    'Upload each row in the catalogue data for indexing.'
+
+    host = os.environ.get('ELASTICSEARCH_URL', 'localhost')
+    es = Elasticsearch(host)
+
+    index_name = f'cdli-catalogue-{datetime.utcnow().date()}'
+
+    print(f'Indexing under {index_name}...')
+    for row in read_catalogue(filenames):
+        print('P' + row['id_text'], row['designation'])
+        es.index(index=index_name, id=row['id_text'], body=row)
+
+
 if __name__ == '__main__':
     filenames = [os.path.join('../cdli-data', fn) for fn in files]
-    print_entries(filenames)
+    index_entries(filenames)
