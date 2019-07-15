@@ -16,40 +16,58 @@
 
       <input v-model.lazy=query @change=search>
 
-      <p v-if=querying>Searching for <strong>{{ query }}</strong>...</p>
+      <div id=status>
+        <p>{{ message.status }}</p>
+      </div>
 
-      <div id=results v-if:results>
+      <div id=results v-if:results.length>
         <h2>Results</h2>
-        <div v-for="result in results">
-          <p>{{ result }}</p>
+        <div v-for="result in searchResults">
+          <p>
+            <a :href=`https://cdli.ucla.edu/${result.code}`>
+              {{ result.code }} {{ result.description }}
+            </a>
+          </p>
         </div>
       </div>
 
       <hr>
-      <p>{{ message }}</p>
+      <p>{{ message.loaded }}</p>
     </div>
     <script src=https://cdn.jsdelivr.net/npm/vue/dist/vue.js></script>
     <script>
       var app = new Vue({
         el: '#app',
         data: {
-          message: 'Page loaded at ' + new Date().toLocaleString() + '.',
-          querying: false,
+          message: {
+            loaded: 'Page loaded at ' + new Date().toLocaleString() + '.',
+            status: '',
+          },
           query: '',
-          results: ['placeholder result', 'second placeholder',],
+          searchResults: ['placeholder result', 'second placeholder',],
         },
         methods: {
           search: function(event) {
-            this.querying = true;
             query = event.target.value;
+            this.message.status = 'Searching for ' + query + '...';
             fetch('/search?q=' + query)
               .then(function(response) {
                 return response.json();
               })
               .then(function(result) {
-                console.log(JSON.stringify(result))
-                this.results.push(result);
-                this.querying = false;
+                const results = []
+                for (let hit of result.hits.hits) {
+                  console.log(hit._id);
+                  code = 'P' + String(hit._id).padStart(6, 0);
+                  console.log(code);
+                  results.push({
+                    code: code,
+                    description: hit._source.designation,
+                  });
+                };
+                // FIXME: How to bind the original this here?
+                app.message.status = result.hits.total.value + ' results.';
+                app.searchResults = results;
               });
           },
         },
