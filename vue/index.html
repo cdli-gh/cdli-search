@@ -20,7 +20,7 @@
         <p>{{ message.status }}</p>
       </div>
 
-      <div id=results v-if:results.length>
+      <div id=results v-if="searchResults.length">
         <h2>Results</h2>
         <div v-for="result in searchResults">
           <p>
@@ -44,7 +44,7 @@
             status: '',
           },
           query: '',
-          searchResults: ['placeholder result', 'second placeholder',],
+          searchResults: [],
         },
         methods: {
           search: function(event) {
