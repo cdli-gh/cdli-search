@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset=UTF-8>
+    <title>CDLI Search Experiment</title>
+  </head>
+  <body>
+    <div id=app>
+      <h1>CDLI Search</h1>
+      <p>Search the Cuneiform Digital Library Initiative database.</p>
+
+      <noscript>
+        Sorry, this interface requires Javascript.
+        Check the source for how to query the search API yourself.
+      </noscript>
+
+      <input v-model.lazy=query @change=search>
+
+      <p v-if=querying>Searching for <strong>{{ query }}</strong>...</p>
+
+      <div id=results v-if:results>
+        <h2>Results</h2>
+        <div v-for="result in results">
+          <p>{{ result }}</p>
+        </div>
+      </div>
+
+      <hr>
+      <p>{{ message }}</p>
+    </div>
+    <script src=https://cdn.jsdelivr.net/npm/vue/dist/vue.js></script>
+    <script>
+      var app = new Vue({
+        el: '#app',
+        data: {
+          message: 'Page loaded at ' + new Date().toLocaleString() + '.',
+          querying: false,
+          query: '',
+          results: ['placeholder result', 'second placeholder',],
+        },
+        methods: {
+          search: function(event) {
+            this.querying = true;
+            query = event.target.value;
+            fetch('http://localhost:8000/search?q=' + query)
+              .then(function(response) {
+                return response.json();
+              })
+              .then(function(result) {
+                console.log(JSON.stringify(result))
+                this.results.push(result);
+                this.querying = false;
+              });
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
