@@ -26,21 +26,7 @@ def search(
         limit: int = 8,
         ):
     'General text search.'
-    return es.search(index=index_name, body={
-        'query': {'multi_match': {
-            'query': q,
-            'fields': [
-                'designation',
-                'primary_publication',
-                'collection',
-                'accession_no',
-                'museum_no',
-                'period',
-                'provenence',
-                'material'
-            ]
-        }}
-    })
+    return es.search(index=index_name, q=q)
 
 
 @app.get('/catalogue/{id}')
