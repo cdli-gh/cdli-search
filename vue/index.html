@@ -42,7 +42,7 @@
           search: function(event) {
             this.querying = true;
             query = event.target.value;
-            fetch('http://localhost:8000/search?q=' + query)
+            fetch('/search?q=' + query)
               .then(function(response) {
                 return response.json();
               })
