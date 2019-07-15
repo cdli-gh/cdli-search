@@ -1,6 +1,7 @@
 import os
 
 from fastapi import FastAPI
+from fastapi import Query
 from elasticsearch import Elasticsearch
 
 host = os.environ.get('ELASTICSEARCH_URL', 'localhost')
@@ -16,7 +17,14 @@ async def hello():
 
 
 @app.get('/search')
-def search(q: str, skip: int = 0, limit: int = 8):
+def search(
+        q: str = Query(
+            ..., title='Query string',
+            description='String to search for in the database.',
+            min_length=2),
+        skip: int = 0,
+        limit: int = 8,
+        ):
     'General text search.'
     return es.search(index=index_name, body={
         'query': {'multi_match': {
