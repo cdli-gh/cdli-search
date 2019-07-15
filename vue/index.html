@@ -57,9 +57,7 @@
               .then(function(result) {
                 const results = []
                 for (let hit of result.hits.hits) {
-                  console.log(hit._id);
                   code = 'P' + String(hit._id).padStart(6, 0);
-                  console.log(code);
                   results.push({
                     code: code,
                     description: hit._source.designation,
