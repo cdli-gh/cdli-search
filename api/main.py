@@ -3,12 +3,14 @@ import os
 from fastapi import FastAPI
 from fastapi import Query
 from elasticsearch import Elasticsearch
+from starlette.staticfiles import StaticFiles
 
 host = os.environ.get('ELASTICSEARCH_URL', 'localhost')
 es = Elasticsearch(host)
 index_name = 'cdli-catalogue-2019-07-13'
 
 app = FastAPI()
+app.mount('/vue', StaticFiles(directory='vue'), name='static')
 
 
 @app.get('/')

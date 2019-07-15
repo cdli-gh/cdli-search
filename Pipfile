@@ -9,6 +9,7 @@ verify_ssl = true
 elasticsearch = "*"
 fastapi = "*"
 uvicorn = "*"
+aiofiles = "*"
 
 [requires]
 python_version = "3.7"
