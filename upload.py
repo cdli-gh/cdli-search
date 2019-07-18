@@ -46,26 +46,54 @@ def print_entries(filenames):
         print('P' + row['id_text'], row['designation'])
 
 
+def index_bodies(rows):
+    '''Construct a sequence of Elasticsearch index actions.
+
+    Pass in a sequence or iterable of dictionaries representing
+    the entries in a metadata catalogue row.'''
+    for row in rows:
+        # Just add metadata keys. The indexer will treat the
+        # rest of the keys as part of the document.
+        row['_id'] = row['id_text']
+        row['_type'] = 'metadata'
+        yield row
+
+
 def index_entries(filenames):
     'Upload each row in the catalogue data for indexing.'
 
     host = os.environ.get('ELASTICSEARCH_URL', 'localhost')
     es = Elasticsearch(host)
 
-    index_name = f'cdli-catalogue-{datetime.utcnow().date()}'
+    index_base = 'cdli-catalogue'
+    index_name = f'{index_base}-{datetime.utcnow().date()}'
 
     print(f'Indexing under {index_name}...')
+    failures = 0
+    successes = 0
     for ok, result in streaming_bulk(
             es,
-            read_catalogue(filenames),
+            index_bodies(read_catalogue(filenames)),
             index=index_name,
     ):
         action, result = result.popitem()
+        id = result['_id']
+        try:
+            # Convert numeric ids to P-numbers.
+            cdli_no = f'P{int(id):06d}'
+        except ValueError:
+            # Use others as-is.
+            cdli_no = id
         if not ok:
-            print(f"Failed to index {result['_id']}!")
+            failures += 1
+            print(f"Failed to index {cdli_no}!")
             continue
-        print(index_name, result['_seq_no'], result['_id'])
+        successes += 1
+        print(index_name, result['_seq_no'], cdli_no)
 
+    print(f'Successfully indexed {successes} catalogue entries.')
+    if failures:
+        print(f'FAILED to index {failures} entries.')
 
 
 if __name__ == '__main__':
