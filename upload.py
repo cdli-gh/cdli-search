@@ -104,6 +104,12 @@ def index_entries(filenames):
     es.indices.put_alias(index=index_name, name=index_base)
 
 
+def index_clear():
+    host = os.environ.get('ELASTICSEARCH_URL', 'localhost')
+    es = Elasticsearch(host)
+    es.indices.delete('cdli-catalog*')
+
+
 if __name__ == '__main__':
     filenames = [os.path.join('../cdli-data', fn) for fn in files]
     index_entries(filenames)
