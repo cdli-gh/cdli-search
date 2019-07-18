@@ -9,6 +9,7 @@ import fileinput
 
 from datetime import datetime
 from elasticsearch import Elasticsearch
+from elasticsearch.helpers import streaming_bulk
 
 files = [
     'cdli_catalogue_1of2.csv',
@@ -54,9 +55,17 @@ def index_entries(filenames):
     index_name = f'cdli-catalogue-{datetime.utcnow().date()}'
 
     print(f'Indexing under {index_name}...')
-    for row in read_catalogue(filenames):
-        print('P' + row['id_text'], row['designation'])
-        es.index(index=index_name, id=row['id_text'], body=row)
+    for ok, result in streaming_bulk(
+            es,
+            read_catalogue(filenames),
+            index=index_name,
+    ):
+        action, result = result.popitem()
+        if not ok:
+            print(f"Failed to index {result['_id']}!")
+            continue
+        print(index_name, result['_seq_no'], result['_id'])
+
 
 
 if __name__ == '__main__':
