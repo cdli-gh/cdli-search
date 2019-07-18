@@ -52,8 +52,13 @@ def index_bodies(rows):
     Pass in a sequence or iterable of dictionaries representing
     the entries in a metadata catalogue row.'''
     for row in rows:
-        # Just add metadata keys. The indexer will treat the
-        # rest of the keys as part of the document.
+        # Decorate the row dictionary with metadata.
+        # First, make sure we're not clobbering any native keys.
+        assert '_id' not in row
+        assert '_type' not in row
+
+        # Now add keys for the properties we want to specify.
+        # The indexer will treat the rest as the document body.
         row['_id'] = row['id_text']
         row['_type'] = 'metadata'
         yield row
