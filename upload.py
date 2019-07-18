@@ -100,6 +100,9 @@ def index_entries(filenames):
     if failures:
         print(f'FAILED to index {failures} entries.')
 
+    # Update the main index alias.
+    es.indices.put_alias(index=index_name, name=index_base)
+
 
 if __name__ == '__main__':
     filenames = [os.path.join('../cdli-data', fn) for fn in files]
