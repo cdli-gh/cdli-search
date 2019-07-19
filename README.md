@@ -1,7 +1,7 @@
 # CDLI Search experiment
 
-This is a experimental search interface for the Cuneiform Digital
-Library Initiative.
+This is a experimental search interface for the [Cuneiform Digital
+Library Initiative](https://cdli.ucla.edu).
 It is based on the [published data export](https://github.com/cdli-gh/data)
 from the project.
 
