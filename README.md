@@ -34,7 +34,7 @@ Start the server with:
 pipenv run uvicorn api.main:app
 ```
 
-Then try the example search page at localhost:8080/vue/index.html
+Then try the [example search page](http://localhost:8080/vue/index.html).
 Or try a manual query:
 
 ```
