@@ -23,7 +23,7 @@ This will take a few minutes.
 ```
 git clone https://github.com/cdli-gh/data ../cdli-data
 pipenv install
-pipenv run upload.py
+pipenv run python upload.py
 ```
 
 Once the upload completes, you can test the search api.
