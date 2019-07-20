@@ -102,6 +102,7 @@ def index_entries(filenames):
 
     # Update the main index alias.
     es.indices.put_alias(index=index_name, name=index_base)
+    print(f'Updated index alias {index_base}')
 
 
 def index_clear():
