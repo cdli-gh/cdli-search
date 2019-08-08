@@ -112,5 +112,5 @@ def index_clear():
 
 
 if __name__ == '__main__':
-    filenames = [os.path.join('../cdli-data', fn) for fn in files]
+    filenames = [os.path.join('./data', fn) for fn in files]
     index_entries(filenames)
