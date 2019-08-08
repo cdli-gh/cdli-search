@@ -10,6 +10,11 @@ import pprint
 import upload
 
 
+def id_from_row(row):
+    'Construct a CDLI id from a catalogue data dictionary.'
+    return f'P{int(row["id_text"]):06d}'
+
+
 def print_composites(filenames):
     'Dump each row in the catalogue for debugging.'
     rows = 0
@@ -18,9 +23,22 @@ def print_composites(filenames):
         rows += 1
         if row['composite'] and row['composite'] != 'needed':
             composites += 1
-            print('P' + row['id_text'], '>>', row['composite'])
+            print(id_from_row(row), '>>', row['composite'])
     print(rows, 'rows')
     print(composites, 'with composite entries')
+
+
+def check_values(filenames):
+    'Check for problems in the entry data.'
+    with fileinput.input(files=filenames, openhook=upload.as_utf8) as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            id = id_from_row(row)
+            for key, value in row.items():
+                if value.isspace():
+                    print(id, key, 'is whitespace-only.')
+                if not value.isprintable():
+                    print(id, key, 'contains non-printable characters.')
 
 
 def check_columns(filenames):
@@ -53,3 +71,4 @@ if __name__ == '__main__':
     filenames = [os.path.join('../cdli-data', fn) for fn in upload.files]
     check_columns(filenames)
     check_empties(filenames)
+    check_values(filenames)
