@@ -1,0 +1,23 @@
+language: python
+dist: xenial
+
+services:
+  - docker
+
+cache:
+  directories:
+    - data
+
+before_install:
+  - docker run -d --name cdli-es -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.3.0
+  - if ! [ -d data/.git ]; then
+      git clone --depth=10 https://github.com/cdli-gh/data;
+    fi
+
+install:
+  - pipenv install
+
+script:
+  - pushd data; git pull; popd
+  - pipenv run python upload.py --quiet data
+  - curl --head localhost:9200/cdli-catalogue
