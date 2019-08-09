@@ -68,7 +68,15 @@ def check_empties(filenames):
 
 
 if __name__ == '__main__':
-    filenames = [os.path.join('../cdli-data', fn) for fn in upload.files]
+    import sys
+
+    data_path = '../cdli-data'
+    if len(sys.argv) > 1:
+        data_path = sys.argv[1]
+
+    print('Checking catalogue data in', data_path)
+    filenames = [os.path.join(data_path, fn) for fn in upload.files]
+
     check_columns(filenames)
     check_empties(filenames)
     check_values(filenames)

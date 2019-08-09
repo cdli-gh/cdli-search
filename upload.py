@@ -113,5 +113,12 @@ def index_clear():
 
 
 if __name__ == '__main__':
-    filenames = [os.path.join('./data', fn) for fn in files]
+    import sys
+
+    data_path = '../cdli-data'
+    if len(sys.argv) > 1:
+        data_path = sys.argv[1]
+    info('Loading catalogue from', data_path)
+
+    filenames = [os.path.join(data_path, fn) for fn in files]
     index_entries(filenames)
