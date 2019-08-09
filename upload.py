@@ -78,11 +78,21 @@ def index_clear():
 
 
 if __name__ == '__main__':
-    import sys
+    import argparse
+    import logging
 
-    data_path = '../cdli-data'
-    if len(sys.argv) > 1:
-        data_path = sys.argv[1]
+    p = argparse.ArgumentParser(
+            description='Upload catalogue data to an Elasticsearch instance.')
+    p.add_argument('data_path',
+                   help='directory containing the catalogue data files')
+    p.add_argument('-q', '--quiet', action='store_true',
+                   help='only print warnings and errors')
+    args = p.parse_args()
 
-    info(f'Loading catalogue from {data_path}')
-    index_entries(data_path)
+    level = logging.INFO
+    if args.quiet:
+        level = logging.WARNING
+    logging.basicConfig(level=level)
+
+    info(f'Loading catalogue from {args.data_path}')
+    index_entries(args.data_path)
