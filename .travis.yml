@@ -15,9 +15,10 @@ before_install:
     fi
 
 install:
-  - pipenv install
+  - pipenv install --dev
 
 script:
   - pushd data; git pull; popd
   - pipenv run python upload.py --quiet data
   - curl --head localhost:9200/cdli-catalogue
+  - pipenv run pycodestyle .
