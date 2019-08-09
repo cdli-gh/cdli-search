@@ -39,9 +39,12 @@ def check_columns(data_path):
     count = len(reader.fieldnames)
     print(f'{count} columns in header')
     for row in reader:
-        for column in row.keys():
-            if column not in reader.fieldnames:
-                print(f'Warning: Extra column not in the header on row {reader.line_num}!\n\t{column}: {row[column]}')
+        extras = [column for column in row.keys()
+                  if column not in reader.fieldnames]
+        for extra in extras:
+            print('Warning: Extra column not in the header'
+                  f' on row {reader.line_num}!'
+                  f'\n\t{extra}: {row[extra]}')
 
 
 def check_empties(data_path):
