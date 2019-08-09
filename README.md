@@ -1,5 +1,7 @@
 # CDLI Search experiment
 
+[![Build Status](https://travis-ci.org/cdli-gh/cdli-search.svg?branch=master)](https://travis-ci.org/cdli-gh/cdli-search)
+
 This is a experimental search interface for the [Cuneiform Digital
 Library Initiative](https://cdli.ucla.edu).
 It is based on the [published data export](https://github.com/cdli-gh/data)
