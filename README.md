@@ -11,7 +11,7 @@ To try it out locally, start an Elasticsearch instance either as
 a local process, or in a container:
 
 ```
-sudo docker run -d --name cdli-es -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.2.0
+sudo docker run -d --name cdli-es -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.3.0
 ```
 
 If your instance is running somewhere else, pass the correct
