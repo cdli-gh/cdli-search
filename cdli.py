@@ -19,6 +19,15 @@ def as_utf8(filename, mode='r'):
     return io.open(filename, mode, encoding='utf-8')
 
 
+def _catalogue_reader(data_path):
+    'Helper returning a DictReader instance over the data.'
+
+    filenames = [os.path.join(data_path, fn) for fn in files]
+
+    csvfile = fileinput.input(files=filenames, openhook=as_utf8)
+    return csv.DictReader(csvfile)
+
+
 def read_catalogue(data_path):
     '''Concatenate and read the catalogue file data.
 
@@ -32,11 +41,8 @@ def read_catalogue(data_path):
     The keys in the dictionary are taken from the column labels
     on the first row.'''
 
-    filenames = [os.path.join(data_path, fn) for fn in files]
-
-    with fileinput.input(files=filenames, openhook=as_utf8) as csvfile:
-        for row in csv.DictReader(csvfile):
-            yield row
+    for row in _catalogue_reader(data_path):
+        yield row
 
 
 def id_from_row(row):
