@@ -8,6 +8,7 @@ import csv
 import fileinput
 
 from datetime import datetime
+from logging import info, warn, error
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import streaming_bulk
 
@@ -73,7 +74,7 @@ def index_entries(filenames):
     index_base = 'cdli-catalogue'
     index_name = f'{index_base}-{datetime.utcnow().date()}'
 
-    print(f'Indexing under {index_name}...')
+    info(f'Indexing under {index_name}...')
     failures = 0
     successes = 0
     for ok, result in streaming_bulk(
@@ -91,18 +92,18 @@ def index_entries(filenames):
             cdli_no = id
         if not ok:
             failures += 1
-            print(f"Failed to index {cdli_no}!")
+            warn(f"Failed to index {cdli_no}!")
             continue
         successes += 1
-        print(index_name, result['_seq_no'], cdli_no)
+        info(f"{index_name} {result['_seq_no']} {cdli_no}")
 
-    print(f'Successfully indexed {successes} catalogue entries.')
+    info(f'Successfully indexed {successes} catalogue entries.')
     if failures:
-        print(f'FAILED to index {failures} entries.')
+        error(f'FAILED to index {failures} entries.')
 
     # Update the main index alias.
     es.indices.put_alias(index=index_name, name=index_base)
-    print(f'Updated index alias {index_base}')
+    info(f'Updated index alias {index_base}')
 
 
 def index_clear():
