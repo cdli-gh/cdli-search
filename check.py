@@ -28,6 +28,9 @@ def check_values(data_path):
     for row in cdli.read_catalogue(data_path):
         id = cdli.id_from_row(row)
         for key, value in row.items():
+            if not isinstance(value, str):
+                print(id, 'skipping non-string value for column', key)
+                continue
             if value.isspace():
                 print(id, key, 'is whitespace-only.')
             if not value.isprintable():
