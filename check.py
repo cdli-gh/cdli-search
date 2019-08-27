@@ -35,6 +35,7 @@ def check_values(data_path):
                 print(id, key, 'is whitespace-only.')
             if not value.isprintable():
                 print(id, key, 'contains non-printable characters.')
+                print('  ', repr(value))
 
 
 def check_columns(data_path):
